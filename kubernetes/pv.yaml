@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: product-data-pv
+spec:
+  capacity:
+    storage: 1Gi
+  volumeMode: Filesystem
+  accessModes:
+    - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Retain
+  hostPath:
+    path: "/Users/abukalam/Documents/Winter-2025-ClassFiles/Adv cloud concepts/Assignments/Assignment3/A1/kubernetes"
+  storageClassName: local-storage

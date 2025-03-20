@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: container1
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: container1
+  template:
+    metadata:
+      labels:
+        app: container1
+    spec:
+      containers:
+      - name: container1
+        image: abukalam/a3_container1:new_feature
+        volumeMounts:
+          - name: storage
+            mountPath: "/app/app_data"
+        resources:
+          limits:
+            memory: "512Mi"
+            cpu: "500m"
+        ports:
+        - containerPort: 6000
+        env:
+        - name: COMPUTE_SERVICE_HOST
+          value: "container2-service"
+        - name: COMPUTE_SERVICE_PORT
+          value: "6001"
+      volumes:
+        - name: storage
+          persistentVolumeClaim:
+            claimName: product-data-pvc
