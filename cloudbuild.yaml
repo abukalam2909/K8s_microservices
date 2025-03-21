@@ -1,7 +1,15 @@
 steps:
-  # Step 1: Pull the code from GitHub (automatically done by Cloud Build trigger)
-
-  # Step 2: Build and push container1
+  # Step 1: Build container1 with Maven
+  - name: 'maven:3.8-openjdk-17'
+    entrypoint: 'mvn'
+    args: ['clean', 'package', '-f', 'container1/pom.xml']
+  
+  # Step 2: Build container2 with Maven
+  - name: 'maven:3.8-openjdk-17'
+    entrypoint: 'mvn'
+    args: ['clean', 'package', '-f', 'container2/pom.xml']
+  
+  # Step 3: Build and push container1 Docker image
   - name: 'gcr.io/cloud-builders/docker'
     args: [
       'build',
@@ -14,7 +22,7 @@ steps:
       '${_REGION}-docker.pkg.dev/${PROJECT_ID}/my-repo/container1:$COMMIT_SHA'
     ]
   
-  # Step 3: Build and push container2
+  # Step 4: Build and push container2 Docker image
   - name: 'gcr.io/cloud-builders/docker'
     args: [
       'build',
@@ -27,7 +35,7 @@ steps:
       '${_REGION}-docker.pkg.dev/${PROJECT_ID}/my-repo/container2:$COMMIT_SHA'
     ]
     
-  # Step 4: Update Kubernetes manifests with new image tags
+  # Step 5: Update Kubernetes manifests with new image tags
   - name: 'gcr.io/cloud-builders/kubectl'
     entrypoint: 'bash'
     args:
@@ -36,7 +44,7 @@ steps:
         sed -i "s|IMAGE_TAG_CONTAINER1|${_REGION}-docker.pkg.dev/${PROJECT_ID}/my-repo/container1:$COMMIT_SHA|g" kubernetes/*.yaml
         sed -i "s|IMAGE_TAG_CONTAINER2|${_REGION}-docker.pkg.dev/${PROJECT_ID}/my-repo/container2:$COMMIT_SHA|g" kubernetes/*.yaml
     
-  # Step 5: Deploy to GKE
+  # Step 6: Deploy to GKE
   - name: 'gcr.io/cloud-builders/kubectl'
     args: ['apply', '-f', 'kubernetes/']
     env:
