@@ -13,30 +13,38 @@ import container1.container1.Model.StoreFileInputDTO;
 
 @Service
 public class Store {
-    public String store(StoreFileInputDTO StoreFileInput){
+    public String store(StoreFileInputDTO storeFileInput) {
         // Create an ObjectMapper
         ObjectMapper mapper = new ObjectMapper();
-
-        // Create a JSON object
         ObjectNode json = mapper.createObjectNode();
-		String fileName = StoreFileInput.getFile();
-        String fileContents = StoreFileInput.getData();
-
+        String NULL = null;
+        
+        // Validate filename
+        String fileName = storeFileInput.getFile();
+        if (fileName == null || fileName.trim().isEmpty()) {
+            json.put("file", NULL);
+            json.put("error", "Invalid JSON input.");
+            return json.toString();
+        }
+        
+        String fileContents = storeFileInput.getData();
         String directoryPath = "/AbuKalamBabuji_PV_dir/";
         String filePath = directoryPath + fileName;
 
-        String[] lineContent = fileContents.split("\n");
-        try(BufferedWriter writer = new BufferedWriter(new FileWriter(filePath))){
-            for(String line : lineContent){
-                writer.write(line+"\n");
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(filePath))) {
+            if (fileContents != null) {
+                String[] lineContent = fileContents.split("\n");
+                for (String line : lineContent) {
+                    writer.write(line + "\n");
+                }
             }
+            
+            json.put("file", fileName);
+            json.put("message", "Success.");
+        } catch (IOException e) {
+            json.put("file", fileName);
+            json.put("error", "Error while storing the file to the storage.");
         }
-        catch(IOException e){
-            e.printStackTrace();
-        }
-
-        json.put("file", fileName);
-        json.put("message", "Success.");
 
         return json.toString();
     }
