@@ -24,7 +24,7 @@ public class Calculate {
 
 		boolean isCsv = true;
 		int expectedFieldCount = -1;
-		String filePath = "/AbuKalamBabuji_PV_dir" + file;
+		String filePath = "/AbuKalamBabuji_PV_dir/" + file;
 
 		try (BufferedReader br = new BufferedReader(new FileReader(filePath))){
 			json.put("file", file);
