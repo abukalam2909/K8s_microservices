@@ -19,8 +19,11 @@ spec:
             mountPath:  "AbuKalamBabuji_PV_dir"
         resources:
           limits:
+            memory: "256Mi"
+            cpu: "250m"
+          requests:
             memory: "128Mi"
-            cpu: "500m"
+            cpu: "100m"
         ports:
         - containerPort: 6001
       volumes:
