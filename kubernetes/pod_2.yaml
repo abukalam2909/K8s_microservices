@@ -3,6 +3,7 @@ kind: Deployment
 metadata:
   name: container2
 spec:
+  replicas: 1
   selector:
     matchLabels:
       app: container2
@@ -16,13 +17,13 @@ spec:
         image: 'IMAGE_TAG_CONTAINER2'
         volumeMounts:
           - name:  storage
-            mountPath:  "AbuKalamBabuji_PV_dir"
+            mountPath:  "/AbuKalamBabuji_PV_dir"
         resources:
           limits:
-            memory: "256Mi"
-            cpu: "250m"
-          requests:
             memory: "128Mi"
+            cpu: "100m"
+          requests:
+            memory: "64Mi"
             cpu: "100m"
         ports:
         - containerPort: 6001
