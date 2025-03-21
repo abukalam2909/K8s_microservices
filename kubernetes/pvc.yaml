@@ -9,4 +9,4 @@ spec:
   volumeMode: Filesystem
   accessModes:
     - ReadWriteOnce
-  storageClassName: local-storage
+  storageClassName: standard

@@ -14,10 +14,10 @@ spec:
     spec:
       containers:
       - name: container1
-        image: abukalam/a3_container1:new_feature
+        image: 'us-central1-docker.pkg.dev/$PROJECT_ID/my-repo/container1:$COMMIT_SHA'
         volumeMounts:
           - name: storage
-            mountPath: "/app/app_data"
+            mountPath: "/AbuKalamBabuji_PV_dir"
         resources:
           limits:
             memory: "512Mi"

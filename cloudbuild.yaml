@@ -1,0 +1,70 @@
+steps:
+  # Clone repository from GitHub
+  - name: 'gcr.io/cloud-builders/git'
+    entrypoint: 'bash'
+    args:
+      - '-c'
+      - |
+        git clone https://github.com/abukalam2909/K8s_microservices.git /workspace/repo
+
+  # Build Docker Images
+  - name: 'gcr.io/cloud-builders/docker'
+    args:
+      - 'build'
+      - '-t'
+      - 'us-central1-docker.pkg.dev/$PROJECT_ID/my-repo/container1:$COMMIT_SHA'
+      - '.'
+    dir: 'repo/container1'
+  
+  - name: 'gcr.io/cloud-builders/docker'
+    args:
+      - 'build'
+      - '-t'
+      - 'us-central1-docker.pkg.dev/$PROJECT_ID/my-repo/container2:$COMMIT_SHA'
+      - '.'
+    dir: 'repo/container2'
+
+  # Push Images to Artifact Registry
+  - name: 'gcr.io/cloud-builders/docker'
+    args:
+      - 'push'
+      - 'us-central1-docker.pkg.dev/$PROJECT_ID/my-repo/container1:$COMMIT_SHA'
+  
+  - name: 'gcr.io/cloud-builders/docker'
+    args:
+      - 'push'
+      - 'us-central1-docker.pkg.dev/$PROJECT_ID/my-repo/container2:$COMMIT_SHA'
+
+  # Deploy to GKE
+  - name: 'gcr.io/cloud-builders/kubectl'
+    args:
+      - 'apply'
+      - '-f'
+      - '/workspace/repo/kubernetes'
+    env:
+      - 'CLOUDSDK_COMPUTE_ZONE=us-central1-a'
+      - 'CLOUDSDK_CONTAINER_CLUSTER=my-gke-cluster'
+
+  # - name: 'gcr.io/cloud-builders/kubectl'
+  #   args:
+  #     - 'set'
+  #     - 'image'
+  #     - 'deployment/your-deployment'
+  #     - 'your-container=us-central1-docker.pkg.dev/$PROJECT_ID/my-repo/container1:$COMMIT_SHA'
+  #   env:
+  #     - 'CLOUDSDK_COMPUTE_ZONE=us-central1-a'
+  #     - 'CLOUDSDK_CONTAINER_CLUSTER=my-gke-cluster'
+  
+  # - name: 'gcr.io/cloud-builders/kubectl'
+  #   args:
+  #     - 'set'
+  #     - 'image'
+  #     - 'deployment/your-deployment'
+  #     - 'your-container=us-central1-docker.pkg.dev/$PROJECT_ID/my-repo/container2:$COMMIT_SHA'
+  #   env:
+  #     - 'CLOUDSDK_COMPUTE_ZONE=us-central1-a'
+  #     - 'CLOUDSDK_CONTAINER_CLUSTER=my-gke-cluster'
+
+images:
+  - 'us-central1-docker.pkg.dev/$PROJECT_ID/my-repo/container1:$COMMIT_SHA'
+  - 'us-central1-docker.pkg.dev/$PROJECT_ID/my-repo/container2:$COMMIT_SHA'

@@ -9,6 +9,7 @@ spec:
   accessModes:
     - ReadWriteOnce
   persistentVolumeReclaimPolicy: Retain
-  hostPath:
-    path: "/Users/abukalam/Documents/Winter-2025-ClassFiles/Adv cloud concepts/Assignments/Assignment3/A1/kubernetes"
-  storageClassName: local-storage
+  storageClassName: standard
+  gcePersistentDisk:
+    pdName: my-disk
+    fsType: ext4

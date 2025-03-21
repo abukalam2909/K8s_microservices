@@ -13,7 +13,7 @@ spec:
     spec:
       containers:
       - name: container2
-        image: abukalam/a3_container2:new_feature
+        image: 'us-central1-docker.pkg.dev/$PROJECT_ID/my-repo/container2:$COMMIT_SHA'
         volumeMounts:
           - name:  storage
             mountPath:  "AbuKalamBabuji_PV_dir"
