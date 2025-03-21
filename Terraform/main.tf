@@ -12,6 +12,13 @@ provider "google" {
   region  = var.region
 }
 
+resource "google_compute_disk" "my_disk" {
+  name  = "my-disk"
+  type  = "pd-standard"
+  zone  = "${var.region}-a"
+  size  = 1
+}
+
 resource "google_container_cluster" "primary" {
   name     = var.cluster_name
   location = var.region
