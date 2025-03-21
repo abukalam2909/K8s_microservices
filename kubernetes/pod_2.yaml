@@ -13,7 +13,7 @@ spec:
     spec:
       containers:
       - name: container2
-        image: 'us-central1-docker.pkg.dev/$PROJECT_ID/my-repo/container2:$COMMIT_SHA'
+        image: 'IMAGE_TAG_CONTAINER2'
         volumeMounts:
           - name:  storage
             mountPath:  "AbuKalamBabuji_PV_dir"

@@ -1,62 +1,51 @@
 steps:
-  # Clone repository from GitHub (for private repo)
-  - name: 'gcr.io/cloud-builders/git'
+  # Step 1: Pull the code from GitHub (automatically done by Cloud Build trigger)
+
+  # Step 2: Build and push container1
+  - name: 'gcr.io/cloud-builders/docker'
+    args: [
+      'build',
+      '-t', '${_REGION}-docker.pkg.dev/${PROJECT_ID}/my-repo/container1:$COMMIT_SHA',
+      './container1'
+    ]
+  - name: 'gcr.io/cloud-builders/docker'
+    args: [
+      'push',
+      '${_REGION}-docker.pkg.dev/${PROJECT_ID}/my-repo/container1:$COMMIT_SHA'
+    ]
+  
+  # Step 3: Build and push container2
+  - name: 'gcr.io/cloud-builders/docker'
+    args: [
+      'build',
+      '-t', '${_REGION}-docker.pkg.dev/${PROJECT_ID}/my-repo/container2:$COMMIT_SHA',
+      './container2'
+    ]
+  - name: 'gcr.io/cloud-builders/docker'
+    args: [
+      'push',
+      '${_REGION}-docker.pkg.dev/${PROJECT_ID}/my-repo/container2:$COMMIT_SHA'
+    ]
+    
+  # Step 4: Update Kubernetes manifests with new image tags
+  - name: 'gcr.io/cloud-builders/kubectl'
     entrypoint: 'bash'
     args:
       - '-c'
       - |
-        git clone https://${_GITHUB_TOKEN}@github.com/abukalam2909/K8s_microservices.git /workspace/repo
-        ls -la /workspace/repo  # List files to verify clone
-    secretEnv: ['GITHUB_TOKEN']
-
-  # Build Docker Images
-  - name: 'gcr.io/cloud-builders/docker'
-    args:
-      - '-c'
-      - |
-        set -x
-        echo "Building container1..."
-        docker build -t us-central1-docker.pkg.dev/$PROJECT_ID/my-repo/container1:$COMMIT_SHA .
-        docker images  # List built images
-    dir: '/workspace/repo/container1'
-  
-  - name: 'gcr.io/cloud-builders/docker'
-    args:
-      - 'build'
-      - '-t'
-      - 'us-central1-docker.pkg.dev/$PROJECT_ID/my-repo/container2:$COMMIT_SHA'
-      - '.'
-    dir: '/workspace/repo/container2'
-
-  # Push Images to Artifact Registry
-  - name: 'gcr.io/cloud-builders/docker'
-    args:
-      - 'push'
-      - 'us-central1-docker.pkg.dev/$PROJECT_ID/my-repo/container1:$COMMIT_SHA'
-  
-  - name: 'gcr.io/cloud-builders/docker'
-    args:
-      - 'push'
-      - 'us-central1-docker.pkg.dev/$PROJECT_ID/my-repo/container2:$COMMIT_SHA'
-
-  # Deploy to GKE
+        sed -i "s|IMAGE_TAG_CONTAINER1|${_REGION}-docker.pkg.dev/${PROJECT_ID}/my-repo/container1:$COMMIT_SHA|g" kubernetes/*.yaml
+        sed -i "s|IMAGE_TAG_CONTAINER2|${_REGION}-docker.pkg.dev/${PROJECT_ID}/my-repo/container2:$COMMIT_SHA|g" kubernetes/*.yaml
+    
+  # Step 5: Deploy to GKE
   - name: 'gcr.io/cloud-builders/kubectl'
-    args:
-      - 'apply'
-      - '-f'
-      - '/workspace/repo/kubernetes'
+    args: ['apply', '-f', 'kubernetes/']
     env:
-      - 'CLOUDSDK_COMPUTE_ZONE=us-central1-a'
-      - 'CLOUDSDK_CONTAINER_CLUSTER=my-gke-cluster'
+      - 'CLOUDSDK_COMPUTE_REGION=${_REGION}'
+      - 'CLOUDSDK_CONTAINER_CLUSTER=${_CLUSTER_NAME}'
 
-images:
-  - 'us-central1-docker.pkg.dev/$PROJECT_ID/my-repo/container1:$COMMIT_SHA'
-  - 'us-central1-docker.pkg.dev/$PROJECT_ID/my-repo/container2:$COMMIT_SHA'
-
-availableSecrets:
-  secretManager:
-    - versionName: projects/$PROJECT_ID/secrets/github-token/versions/latest
-      env: 'GITHUB_TOKEN'
+substitutions:
+  _REGION: us-central1
+  _CLUSTER_NAME: my-gke-cluster
 
 options:
   logging: CLOUD_LOGGING_ONLY
