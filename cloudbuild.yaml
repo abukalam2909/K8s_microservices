@@ -6,15 +6,18 @@ steps:
       - '-c'
       - |
         git clone https://${_GITHUB_TOKEN}@github.com/abukalam2909/K8s_microservices.git /workspace/repo
+        ls -la /workspace/repo  # List files to verify clone
     secretEnv: ['GITHUB_TOKEN']
 
   # Build Docker Images
   - name: 'gcr.io/cloud-builders/docker'
     args:
-      - 'build'
-      - '-t'
-      - 'us-central1-docker.pkg.dev/$PROJECT_ID/my-repo/container1:$COMMIT_SHA'
-      - '.'
+      - '-c'
+      - |
+        set -x
+        echo "Building container1..."
+        docker build -t us-central1-docker.pkg.dev/$PROJECT_ID/my-repo/container1:$COMMIT_SHA .
+        docker images  # List built images
     dir: '/workspace/repo/container1'
   
   - name: 'gcr.io/cloud-builders/docker'
