@@ -22,7 +22,7 @@ public class Store {
 		String fileName = StoreFileInput.getFile();
         String fileContents = StoreFileInput.getData();
 
-        String directoryPath = "/AbuKalamBabuji_PV_dir";
+        String directoryPath = "/AbuKalamBabuji_PV_dir/";
         String filePath = directoryPath + fileName;
 
         String[] lineContent = fileContents.split("\n");

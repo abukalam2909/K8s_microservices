@@ -36,7 +36,7 @@ resource "google_container_node_pool" "primary_nodes" {
   node_count = 1  # Single node as required
 
   node_config {
-    machine_type    = "e2-micro"       # 2 vCPU, 1GB memory
+    machine_type    = "e2-small"       # 2 vCPU, 2GB memory
     image_type      = "COS_CONTAINERD" # Container-Optimized OS with containerd
     disk_type       = "pd-standard"    # Standard persistent disk
     disk_size_gb    = 10               # Boot disk size 10GB
