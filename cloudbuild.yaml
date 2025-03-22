@@ -56,7 +56,6 @@ substitutions:
   _REGION: us-central1
   _ZONE: us-central1-a
   _CLUSTER_NAME: my-gke-cluster
-  PROJECT_ID: ${PROJECT_ID}
 
 options:
   logging: CLOUD_LOGGING_ONLY
