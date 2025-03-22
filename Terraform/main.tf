@@ -26,7 +26,7 @@ resource "google_container_cluster" "primary" {
   networking_mode         = "VPC_NATIVE"  # Enables VPC-native (alias IP)
   initial_node_count       = 1
 
-  enable_autopilot = false  # Autopilot is disabled
+  remove_default_node_pool = true  # Removes the default node pool
 }
 
 resource "google_container_node_pool" "primary_nodes" {
