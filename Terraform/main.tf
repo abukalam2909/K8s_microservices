@@ -21,16 +21,17 @@ resource "google_compute_disk" "my_disk" {
 
 resource "google_container_cluster" "primary" {
   name     = var.cluster_name
-  location = var.region
+  location = "${var.region}-a"
 
   networking_mode         = "VPC_NATIVE"  # Enables VPC-native (alias IP)
-  remove_default_node_pool = true
   initial_node_count       = 1
+
+  enable_autopilot = false  # Autopilot is disabled
 }
 
 resource "google_container_node_pool" "primary_nodes" {
   name       = "primary-node-pool"
-  location   = var.region
+  location   = "${var.region}-a"
   cluster    = google_container_cluster.primary.name
 
   node_count = 1  # Single node as required
