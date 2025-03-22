@@ -41,7 +41,7 @@ resource "google_container_node_pool" "primary_nodes" {
     machine_type    = "e2-small"       # 2 vCPU, 2GB memory
     image_type      = "COS_CONTAINERD" # Container-Optimized OS with containerd
     disk_type       = "pd-standard"    # Standard persistent disk
-    disk_size_gb    = 10               # Boot disk size 10GB
+    disk_size_gb    = 20               # Boot disk size 20GB
     preemptible     = false            # Non-preemptible instance
     oauth_scopes    = ["https://www.googleapis.com/auth/cloud-platform"]
   }
