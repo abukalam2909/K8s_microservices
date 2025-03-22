@@ -13,26 +13,26 @@ steps:
   - name: 'gcr.io/cloud-builders/docker'
     args: [
       'build',
-      '-t', '${_REGION}-docker.pkg.dev/${PROJECT_ID}/my-repo/container1:$COMMIT_SHA',
+      '-t', '${_REGION}-docker.pkg.dev/${PROJECT_ID}/container1-repo/container1:$COMMIT_SHA',
       './container1'
     ]
   - name: 'gcr.io/cloud-builders/docker'
     args: [
       'push',
-      '${_REGION}-docker.pkg.dev/${PROJECT_ID}/my-repo/container1:$COMMIT_SHA'
+      '${_REGION}-docker.pkg.dev/${PROJECT_ID}/container1-repo/container1:$COMMIT_SHA'
     ]
   
   # Step 4: Build and push container2 Docker image
   - name: 'gcr.io/cloud-builders/docker'
     args: [
       'build',
-      '-t', '${_REGION}-docker.pkg.dev/${PROJECT_ID}/my-repo/container2:$COMMIT_SHA',
+      '-t', '${_REGION}-docker.pkg.dev/${PROJECT_ID}/container2-repo/container2:$COMMIT_SHA',
       './container2'
     ]
   - name: 'gcr.io/cloud-builders/docker'
     args: [
       'push',
-      '${_REGION}-docker.pkg.dev/${PROJECT_ID}/my-repo/container2:$COMMIT_SHA'
+      '${_REGION}-docker.pkg.dev/${PROJECT_ID}/container2-repo/container2:$COMMIT_SHA'
     ]
     
   # Step 5: Update Kubernetes manifests with new image tags
@@ -41,8 +41,8 @@ steps:
     args:
       - '-c'
       - |
-        sed -i "s|IMAGE_TAG_CONTAINER1|${_REGION}-docker.pkg.dev/${PROJECT_ID}/my-repo/container1:$COMMIT_SHA|g" kubernetes/*.yaml
-        sed -i "s|IMAGE_TAG_CONTAINER2|${_REGION}-docker.pkg.dev/${PROJECT_ID}/my-repo/container2:$COMMIT_SHA|g" kubernetes/*.yaml
+        sed -i "s|IMAGE_TAG_CONTAINER1|${_REGION}-docker.pkg.dev/${PROJECT_ID}/container1-repo/container1:$COMMIT_SHA|g" kubernetes/*.yaml
+        sed -i "s|IMAGE_TAG_CONTAINER2|${_REGION}-docker.pkg.dev/${PROJECT_ID}/container2-repo/container2:$COMMIT_SHA|g" kubernetes/*.yaml
     
   # Step 6: Deploy to GKE
   - name: 'gcr.io/cloud-builders/kubectl'
