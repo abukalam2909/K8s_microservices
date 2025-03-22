@@ -27,6 +27,7 @@ resource "google_container_cluster" "primary" {
   initial_node_count       = 1
 
   remove_default_node_pool = true  # Removes the default node pool
+  deletion_protection = false
 }
 
 resource "google_container_node_pool" "primary_nodes" {
