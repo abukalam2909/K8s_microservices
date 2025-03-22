@@ -15,13 +15,13 @@ provider "google" {
 resource "google_compute_disk" "my_disk" {
   name  = "my-disk"
   type  = "pd-standard"
-  zone  = "${var.region}-a"
+  zone  = var.zone
   size  = 1
 }
 
 resource "google_container_cluster" "primary" {
   name     = var.cluster_name
-  location = "${var.region}-a"
+  location = var.zone
 
   networking_mode         = "VPC_NATIVE"  # Enables VPC-native (alias IP)
   initial_node_count       = 1
@@ -31,7 +31,7 @@ resource "google_container_cluster" "primary" {
 
 resource "google_container_node_pool" "primary_nodes" {
   name       = "primary-node-pool"
-  location   = "${var.region}-a"
+  location   = var.zone
   cluster    = google_container_cluster.primary.name
 
   node_count = 1  # Single node as required
