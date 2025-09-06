@@ -25,8 +25,8 @@ Service 1 exposes an API for ingesting product data files and delegating compu
 ```
 ┌──────────────┐        POST /store-file        ┌──────────────┐
 │  Client      │ ─────────────────────────────▶ │  container1  │
-│              │        POST /calculate        │  (API svc)   │
-└──────────────┘ ◀─────────────────────────────└─────┬────────┘
+│              │        POST /calculate         │  (API svc)   │
+└──────────────┘ ◀───────────────────────────── └─────┬────────┘
                                                      │
                                     HTTP (internal)  │
                                                      ▼
